@@ -64,4 +64,41 @@ function handleAgeCheck(field) {
         }
         return;
     }
+
+    // if the input filed is the date (DOB), format yyyy-mm-dd
+    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        const today = new Date();
+
+        const parts = val.split("-");
+        let year = parseInt(parts[0], 10);
+        let month = parseInt(parts[1], 10) - 1; // 0-based
+        let day = parseInt(parts[2], 10);
+
+        const birth = new Date(year, month, day);
+
+        if (isNaN(birth.getTime())) {
+            return;
+        }
+
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+
+        console.log('age is: ', age);
+
+        if (age < 17 && !is_new_form_opened) {
+            is_new_form_opened = true;
+            window.open(formURL, "_blank");
+        }
+
+        if (is_new_form_opened) {
+            setTimeout(() => {
+                is_new_form_opened = false;
+            }, (1000 * 60 * 2));
+        }
+        return;
+    }
 }
